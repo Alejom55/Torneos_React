@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const TournamentGenerator = () => {
-  const [teamCount, setTeamCount] = useState(4);
+  const [teamCount, setTeamCount] = useState(2);
   const [teamNames, setTeamNames] = useState(Array(teamCount).fill(''));
   const [matches, setMatches] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
@@ -10,9 +10,10 @@ const TournamentGenerator = () => {
   const [showWinnersList, setShowWinnersList] = useState(false);
   const [round, setRound] = useState(1);
   const [waitingPlayers, setWaitingPlayers] = useState([]);
+  const [showPodium, setShowPodium] = useState(false);
+  const [showButtons, setShowButtons] = useState(true); // Agregado para controlar la visibilidad de los botones
   const [tournamentEnded, setTournamentEnded] = useState(false);
-  const [finalWinner, setFinalWinner] = useState('');
-  const [showButtons, setShowButtons] = useState(true);
+const [finalWinner, setFinalWinner] = useState('');
 
   const handleTeamCountChange = (event) => {
     const count = parseInt(event.target.value, 10);
@@ -25,12 +26,12 @@ const TournamentGenerator = () => {
       setWinner(null);
       setWinnersList([]);
       setShowWinnersList(false);
-      setTournamentEnded(false);
-      setFinalWinner('');
+      setShowButtons(true); // Muestra los botones nuevamente
     } else {
       setErrorMessage('El número de equipos debe ser par.');
     }
   };
+
 
   const handleTeamNameChange = (index, event) => {
     const updatedNames = [...teamNames];
@@ -73,23 +74,26 @@ const TournamentGenerator = () => {
     const updatedMatches = [...matches];
     updatedMatches[matchIndex].participants[participantIndex].resultText = 'WON';
     setMatches(updatedMatches);
-
+  
     const winningTeam = updatedMatches[matchIndex].participants[participantIndex].name;
-
+  
     if (!winnersList.includes(winningTeam)) {
       setWinnersList((prevWinnersList) => [...prevWinnersList, winningTeam]);
     }
-
-    if (winnersList.length + 1 === teamCount / 2) {
-      setTournamentEnded(true);
-      setFinalWinner(`${winningTeam} ha ganado el torneo.`);
+  
+    if (winnersList.length || teamCount < 1) {
+      // El último ganador, ocultar los botones y mostrar el mensaje de ganador
+      setShowButtons(false);
+      setWinner(`${winningTeam}`);
     } else {
+      // Mostrar mensaje de jugador que pasa de ronda
       setWinner(`${winningTeam} pasa a la siguiente ronda.`);
     }
-
+  
     // Deshabilitar los botones después de seleccionar un ganador
     const updatedMatchesAfterSelection = updatedMatches.map((match, index) => {
       if (index === matchIndex) {
+        // Deshabilitar los botones de este match
         return {
           ...match,
           participants: match.participants.map((participant, pIndex) => {
@@ -105,10 +109,14 @@ const TournamentGenerator = () => {
       }
       return match;
     });
-
+  
     setMatches(updatedMatchesAfterSelection);
+  
+    if (winnersList.length + 1 === teamCount / 2) {
+      // Mostrar los botones de la competencia final
+      setShowButtons(true);
+    }
   };
-
   const generateWinnersMatches = () => {
     if (winnersList.length < 2 && waitingPlayers.length === 0) {
       setErrorMessage('Debe haber al menos dos ganadores o jugadores en espera para generar enfrentamientos.');
@@ -150,8 +158,7 @@ const TournamentGenerator = () => {
       if (shuffledWinners.length === 1) {
         setWinner(shuffledWinners[0]);
         setShowWinnersList(false);
-        setTournamentEnded(true);
-        setFinalWinner(`${shuffledWinners[0]} ha ganado el torneo.`);
+        setShowButtons(false); // Ocultar los botones
       }
     } else if (winnersList.length === 1 && waitingPlayers.length === 1) {
       const winnerA = winnersList[0];
@@ -175,6 +182,7 @@ const TournamentGenerator = () => {
       setWinner(null);
       setErrorMessage('');
       setShowWinnersList(false);
+      setShowButtons(true); // Muestra los botones para la competencia final
       setRound(round + 1);
       setWaitingPlayers([]);
     }
@@ -185,7 +193,7 @@ const TournamentGenerator = () => {
       <h1>Tournament Generator</h1>
       <label>
         Number of Teams (must be even):
-        <input type="number" min="4" max="32" step="2" value={teamCount} onChange={handleTeamCountChange} />
+        <input type="number" min="2" max="32" step="2" value={teamCount} onChange={handleTeamCountChange} />
       </label>
       <ul>
         {teamNames.map((teamName, index) => (
@@ -209,14 +217,23 @@ const TournamentGenerator = () => {
               <button
                 key={participant.id}
                 onClick={() => determineWinner(matchIndex, participantIndex)}
-                disabled={tournamentEnded || participant.disabled}
               >
                 {participant.name}
               </button>
             ))}
           </div>
         ))}
-      {tournamentEnded && finalWinner && <p>{finalWinner}</p>}
+        {showPodium && winnersList.length > 0 && (
+          <div>
+            <h2>Podium</h2>
+            {winnersList.slice(0, 3).map((winner, index) => (
+              <p key={index}>{`#${index + 1}: ${winner}`}</p>
+            ))}
+          </div>
+        )}
+      {winner !== null && winner !== '' && (
+        <p>{winner === 'Nadie' ? 'Nadie ha ganado el torneo.' : `${winner} ha ganado el torneo.`}</p>
+      )}
       {showWinnersList && (
         <div>
           <h2>Winners List (Round {round - 1})</h2>
@@ -227,7 +244,7 @@ const TournamentGenerator = () => {
           </ul>
         </div>
       )}
-      {!tournamentEnded && showButtons && (
+      {showButtons && (
         <div>
           <button onClick={generateWinnersMatches}>Generate Winners Matches</button>
         </div>
