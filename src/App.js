@@ -231,7 +231,6 @@ const TournamentGenerator = () => {
 
     }
     const generadorEnfrentamientos = () => {
-        console.log(matches)
 
         if (teamCount === 2) {
             const finalMatch = matches[matches.length - 1];
@@ -310,7 +309,6 @@ const TournamentGenerator = () => {
             const firstFight = matches.slice(0, 4)
             const secondFight = matches.slice(-2);
             const thirdFight = matches.slice(-1);
-            console.log("matches", matches)
             return (
                 <div>
                     {firstFight.length > 0 && matches.length < 6 && (
@@ -435,12 +433,6 @@ const TournamentGenerator = () => {
             const thirdFight = matches.slice(24, 28);
             const fourFight = matches.slice(28, 30);
             const fiveFight = matches.slice(30,31)
-            console.log(matches.length)
-            console.log(firstFight)
-            console.log(secondFight)
-            console.log(thirdFight)
-            console.log(fourFight)
-            console.log(fiveFight)
             return (
                 <div>
                     {firstFight.length > 0 && matches.length < firstFight.length + 8 && (
