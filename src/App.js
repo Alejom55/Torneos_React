@@ -143,7 +143,6 @@ const TournamentGenerator = () => {
             newMatches[i].id = `match-${number++}`
             setNumeroMatch(number)
         };
-        //setRoundNumber(round)
         setMatches(prevMatches => [...prevMatches, ...newMatches]);
         listWinners = []
 
