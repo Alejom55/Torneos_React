@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { SingleEliminationBracket, Match, SVGViewer } from '@g-loot/react-tournament-brackets';
+import { SingleEliminationBracket, Match, SVGViewer, createTheme } from '@g-loot/react-tournament-brackets';
+
 
 const TournamentGenerator = () => {
     const [teamCount, setTeamCount] = useState("");
@@ -7,21 +8,23 @@ const TournamentGenerator = () => {
     const [randomizeButtonVisible, setRandomizeButtonVisible] = useState(false);
     const [matches, setMatches] = useState([]);
     const [generatedNumbers, setGeneratedNumbers] = useState([]);
-    const [numeroMatch, setNumeroMatch] = useState(0);
+    const [numeroMatch, setNumeroMatch] = useState(1);
     const [roundNumber, setRoundNumber] = useState(1);
     const [last, setLast] = useState(false)
     let listWinners = [];
     let pepe = false;
+
+
 
     const generateNames = (event) => {
         const count = parseInt(event.target.value, 10);
         setTeamCount(count);
         setTeamNames(Array(count).fill(''));
         setRandomizeButtonVisible(false);
-        setMatches([]); // Limpiar los enfrentamientos al cambiar la cantidad de equipos
+        setMatches([]);
         setLast(false)
         setRoundNumber(1)
-        setNumeroMatch(0)
+        setNumeroMatch(1)
         setGeneratedNumbers([])
     };
 
@@ -36,7 +39,7 @@ const TournamentGenerator = () => {
     const shuffleTeams = () => {
         setLast(false)
         setRoundNumber(1)
-        setNumeroMatch(0)
+        setNumeroMatch(1)
         setGeneratedNumbers([])
         const shuffledNames = [...teamNames];
         for (let i = shuffledNames.length - 1; i > 0; i--) {
@@ -46,8 +49,8 @@ const TournamentGenerator = () => {
         setTeamNames(shuffledNames);
         const newMatches = [];
 
-        let number = numeroMatch;
-        let round = roundNumber;
+        let number = 1;
+        let round = 1;
         const listaNumeros = [];
 
 
@@ -98,6 +101,7 @@ const TournamentGenerator = () => {
             newMatches.push(match);
 
         }
+
         newMatches[0].tournamentRoundText = round
         setRoundNumber(round)
         setMatches(newMatches);
@@ -136,8 +140,26 @@ const TournamentGenerator = () => {
 
         setNumeroMatch(number)
         newMatches.push(match);
-        round += 1
-        newMatches[0].tournamentRoundText = round
+
+        if (number <= teamCount/2){
+            newMatches[0].tournamentRoundText = round
+        }else if(number >= teamCount/2){
+            newMatches[0].tournamentRoundText = round
+        }
+        if (Math.log2(teamCount) >= Math.log2(number) && round % 2 === 0) {
+            if (round !== 0) {
+                round += 1
+            }
+            newMatches[0].tournamentRoundText = round
+
+        } else if (Math.log2(teamCount) >= Math.log2(number) && round % 2 === 1) {
+            round += 1
+            newMatches[0].tournamentRoundText = round
+
+        } else {
+            newMatches[0].tournamentRoundText = round
+        }
+
         setRoundNumber(round)
         for (let i = 0; i < newMatches.length; i += 1) {
             newMatches[i].id = `match-${number++}`
@@ -209,27 +231,62 @@ const TournamentGenerator = () => {
 
         }
     };
+    const WhiteTheme = createTheme({
+        textColor: { main: '#000000', highlighted: '#07090D', dark: '#3E414D' },
+        matchBackground: { wonColor: '#daebf9', lostColor: '#96c6da' },
+        score: {
+            background: { wonColor: '#87b2c4', lostColor: '#87b2c4' },
+            text: { highlightedWonColor: '#7BF59D', highlightedLostColor: '#FB7E94' },
+        },
+        border: {
+            color: '#efdf48',
+            highlightedColor: '#da96c6',
+        },
+        roundHeader: { backgroundColor: '#c7e058', fontColor: 'white    ' },
+        connectorColor: '#c7e058',
+        connectorColorHighlight: '#da96c6',
+        svgBackground: `url(/fondo.jpg)`, // Asegúrate de que la ruta sea correcta
+    });
+
     const showGrafic = (last) => {
         return (
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', marginTop: '-100px' }}>
                 {last && (
                     <SingleEliminationBracket
-
                         matches={matches}
                         matchComponent={Match}
+                        theme={WhiteTheme}
+                        options={{
+                            style: {
+                                roundHeader: {
+                                    backgroundColor: WhiteTheme.roundHeader.backgroundColor,
+                                    fontColor: WhiteTheme.roundHeader.fontColor,
+                                },
+                                connectorColor: WhiteTheme.connectorColor,
+                                connectorColorHighlight: WhiteTheme.connectorColorHighlight,
+                            },
+                        }}
                         svgWrapper={({ children, ...props }) => (
-                            <SVGViewer width={800} height={500} {...props}>
+                            <SVGViewer
+                                background={WhiteTheme.svgBackground}
+                                SVGBackground={WhiteTheme.svgBackground}
+                                width={800}
+                                height={500}
+                                {...props}
+                            >
                                 {children}
                             </SVGViewer>
                         )}
                     />
                 )}
             </div>
-
-        )
-
-    }
+        );
+    };
     const generadorEnfrentamientos = () => {
+
+
+        console.log(matches)
+
 
         if (teamCount === 2) {
             const finalMatch = matches[matches.length - 1];
@@ -241,18 +298,25 @@ const TournamentGenerator = () => {
                     {matches.length > 0 && last === false && (
                         <div>
                             <h2>Enfrentamiento</h2>
-                            <ul>
-                                {matches.map(match => (
 
-                                    <li key={match.id}>
-                                        {teamA.name} vs. {teamB.name} <br></br>
+                            {matches.map(match => (
 
-                                        <button onClick={() => winner(match.id, teamA.name, true)}>Ganador: {teamA.name} </button>
-                                        <button onClick={() => winner(match.id, teamB.name, true)}>Ganador: {teamB.name}</button>
+                                <div>
+                                    <span className="match-description">
+                                        {teamA.name} vs. {teamB.name}
+                                    </span>
+                                    <br></br>
+                                    <button className="winner-button" onClick={() => winner(match.id, teamA.name, true)}>
+                                        Ganador: {teamA.name}
+                                    </button>
+                                    <button className="winner-button" onClick={() => winner(match.id, teamB.name, true)}>
+                                        Ganador: {teamB.name}
+                                    </button>
+                                </div>
 
-                                    </li>
-                                ))}
-                            </ul>
+
+                            ))}
+
                         </div>
                     )}
                     {showGrafic(last)}
@@ -431,7 +495,7 @@ const TournamentGenerator = () => {
             const secondFight = matches.slice(16, 24);
             const thirdFight = matches.slice(24, 28);
             const fourFight = matches.slice(28, 30);
-            const fiveFight = matches.slice(30,31)
+            const fiveFight = matches.slice(30, 31)
             return (
                 <div>
                     {firstFight.length > 0 && matches.length < firstFight.length + 8 && (
@@ -493,7 +557,7 @@ const TournamentGenerator = () => {
                     )}
                     {matches.length === 31 && last === false && (
                         <div>
-                            <h2>Enfrentamiento 5</h2>
+                            <h2 className="round-title">Enfrentamiento 5</h2>
                             <ul>
                                 {fiveFight.map(match => (
                                     <li key={match.id}>
@@ -527,6 +591,7 @@ const TournamentGenerator = () => {
 
             <ul>
                 {teamNames.map((teamName, index) => (
+
                     <li key={index}>
                         <input
                             type="text"
@@ -539,16 +604,12 @@ const TournamentGenerator = () => {
             </ul>
 
             {randomizeButtonVisible && (
-                <button onClick={shuffleTeams}>Randomizar enfrentamientos</button>
+                <button className="randomize-button" onClick={shuffleTeams}>
+                    Randomizar enfrentamientos
+                </button>
             )}
             {matches.length > 0 && (
                 generadorEnfrentamientos())}
-
-
-
-
-
-
 
 
         </div>
