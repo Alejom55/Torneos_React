@@ -1,0 +1,142 @@
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url('/public/fondo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  
+  text-align: center;
+
+}
+@keyframes wave {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, 10px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+
+h1 {
+  font-family: 'Playpen Sans', sans-serif; /* Utiliza el nombre de la fuente exactamente como se proporciona en Google Fonts. */
+  font-size: 40px; /* Tamaño de fuente */
+  font-weight: bold; /* Peso de la fuente (por ejemplo, 'bold', 'normal', 'lighter') */
+  color: #000000; /* Color del texto */
+  -webkit-text-stroke: 2px black; /* Para navegadores basados en WebKit, como Chrome y Safari */
+  animation: wave 2s linear infinite; /* Aplicar la animación 'wave' al elemento h1 */
+  text-shadow: 5px 5px 4px rgba(241, 241, 241, 0.945);
+  background-color: #ffffff; /* Color de fondo */
+  padding: 10px; /* Espaciado interno para que el fondo sea más visible */
+  border: 2px solid #000000; /* Borde sólido con color personalizado */
+  border-radius: 10px; /* Bordes redondeados */
+  text-decoration-line: 5px 5px 10px rgba(255, 255, 255, 0.5); /* Sombra en el contenedor del título */
+}
+
+label {
+  font-family: 'Playpen Sans', sans-serif; /* Utiliza el nombre de la fuente exactamente como se proporciona en Google Fonts. */
+  font-size: 25px;
+  text-shadow: 5px 5px 10px rgb(216, 240, 6); /* Sombra en el contenedor del título */
+}
+
+select {
+  text-align: center; /* Centrar el texto en el select */
+  background-color: rgba(209, 206, 12, 0.966)  ;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+
+}
+
+option {
+  text-align: center; /* Centrar el texto en las opciones */
+  background-color: rgb(255, 145, 0)  ;
+  color: #333;
+  }
+
+button {
+    font-family: 'Playpen Sans', sans-serif;
+    font-size: 13px;
+    color: #000000;
+    background-color: #ff9500;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 10px 20px; /* Ajusta el espaciado interno para centrar verticalmente */
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: inline-block; /* Asegura que los botones se ajusten al contenido y se centren verticalmente */
+  }
+
+button:hover{
+      background-color: #aa6000; /* Cambia el color de fondo al pasar el mouse */
+
+}
+  
+  
+input {
+  font-family: 'Playpen Sans', sans-serif; /* Utiliza la fuente deseada */
+  font-size: 15px; /* Tamaño de fuente */
+  color:  #000000; /* Color del texto */
+  background-color: #d8d16e; /* Color de fondo */
+  border: 1px solid #000000; /* Borde sólido con color personalizado */
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 5px; /* Espaciado interno */
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra */
+  text-align: center; /* Centrar el texto en los campos de entrada */
+}
+
+
+
+
+  select:hover {
+    cursor: pointer;
+  }
+
+  
+.randomize-button {
+    background-color: #ff9500; /* Cambia el color de fondo */
+    color: #fff; /* Cambia el color del texto */
+    border-radius: 8px; /* Cambia el radio de las esquinas */
+    padding: 12px 24px; /* Ajusta el espaciado interno */
+    font-size: 15px; /* Cambia el tamaño de fuente */
+    font-weight: bold; /* Agrega negritas al texto si lo deseas */
+    border: none; /* Elimina el borde si es necesario */
+}
+
+.randomize-button:hover {
+    background-color: #aa6000; /* Cambia el color de fondo al pasar el mouse */
+    /* Agrega más estilos de hover si lo deseas */}
+
+
+
+h2 {
+  font-family: 'Playpen Sans', sans-serif; /* Utiliza la fuente deseada */
+  font-size: 24px; /* Cambia el tamaño de fuente del título de la ronda */
+  color: #d7f550; /* Cambia el color del texto del título */
+  /* Otros estilos según tus preferencias */
+}
+
+
+
+/* Agrega más estilos según tus necesidades */
+
+
+
